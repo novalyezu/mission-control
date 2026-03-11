@@ -1,4 +1,4 @@
-import { Doc, Id } from "../../../convex/_generated/dataModel";
+import { Doc } from "../../../convex/_generated/dataModel";
 import AgentAvatar from "@/components/agents/AgentAvatar";
 import Tag from "@/components/ui/Tag";
 import { timeAgo } from "@/lib/utils";
@@ -9,6 +9,7 @@ type EnrichedTask = Doc<"tasks"> & {
 
 type Props = {
   task: EnrichedTask;
+  onClick?: () => void;
 };
 
 function PriorityIcon({ priority }: { priority?: string }) {
@@ -21,11 +22,11 @@ function PriorityIcon({ priority }: { priority?: string }) {
   return null;
 }
 
-export default function TaskCard({ task }: Props) {
+export default function TaskCard({ task, onClick }: Props) {
   const firstAssignee = task.assignees.find(Boolean) as Doc<"agents"> | undefined;
 
   return (
-    <div className="bg-bg-card border border-border rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow cursor-default">
+    <div className="bg-bg-card border border-border rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={onClick}>
       <div className="flex items-start gap-1.5 mb-1">
         <PriorityIcon priority={task.priority} />
         <h3 className="text-sm font-semibold text-text-primary leading-snug flex-1">{task.title}</h3>

@@ -1,4 +1,4 @@
-import { Doc } from "../../../convex/_generated/dataModel";
+import { Doc, Id } from "../../../convex/_generated/dataModel";
 import TaskCard from "./TaskCard";
 
 type EnrichedTask = Doc<"tasks"> & { assignees: (Doc<"agents"> | null)[] };
@@ -19,9 +19,10 @@ const COLUMN_CONFIG: Record<string, ColumnConfig> = {
 type Props = {
   status: string;
   tasks: EnrichedTask[];
+  onSelectTask: (id: Id<"tasks">) => void;
 };
 
-export default function BoardColumn({ status, tasks }: Props) {
+export default function BoardColumn({ status, tasks, onSelectTask }: Props) {
   const config = COLUMN_CONFIG[status] ?? { label: status, dotColor: "bg-gray-400" };
 
   return (
@@ -39,7 +40,9 @@ export default function BoardColumn({ status, tasks }: Props) {
             No tasks
           </div>
         ) : (
-          tasks.map((task) => <TaskCard key={task._id} task={task} />)
+          tasks.map((task) => (
+            <TaskCard key={task._id} task={task} onClick={() => onSelectTask(task._id)} />
+          ))
         )}
       </div>
     </div>

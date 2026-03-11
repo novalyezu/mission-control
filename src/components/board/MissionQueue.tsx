@@ -7,7 +7,11 @@ import StatusDot from "@/components/ui/StatusDot";
 
 const STATUSES = ["inbox", "assigned", "in_progress", "review", "done"] as const;
 
-export default function MissionQueue() {
+type Props = {
+  onSelectTask: (id: Id<"tasks">) => void;
+};
+
+export default function MissionQueue({ onSelectTask }: Props) {
   const tasks = useQuery(api.tasks.list);
   const agents = useQuery(api.agents.list);
 
@@ -59,7 +63,7 @@ export default function MissionQueue() {
             ))
           ) : (
             STATUSES.map((status) => (
-              <BoardColumn key={status} status={status} tasks={tasksByStatus[status] ?? []} />
+              <BoardColumn key={status} status={status} tasks={tasksByStatus[status] ?? []} onSelectTask={onSelectTask} />
             ))
           )}
         </div>

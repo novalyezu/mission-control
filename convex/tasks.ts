@@ -72,6 +72,42 @@ export const updateStatus = mutation({
   },
 });
 
+export const getWithDetails = query({
+  args: { id: v.id("tasks") },
+  handler: async (ctx, args) => {
+    const task = await ctx.db.get(args.id);
+    if (!task) return null;
+
+    const [assignees, messages, documents] = await Promise.all([
+      Promise.all(task.assigneeIds.map((id) => ctx.db.get(id))),
+      ctx.db
+        .query("messages")
+        .withIndex("by_task", (q) => q.eq("taskId", args.id))
+        .order("asc")
+        .collect(),
+      ctx.db
+        .query("documents")
+        .withIndex("by_task", (q) => q.eq("taskId", args.id))
+        .order("desc")
+        .collect(),
+    ]);
+
+    const enrichedMessages = await Promise.all(
+      messages.map(async (msg) => ({
+        ...msg,
+        sender: await ctx.db.get(msg.fromAgentId),
+      }))
+    );
+
+    return {
+      ...task,
+      assignees: assignees.filter(Boolean),
+      messages: enrichedMessages,
+      documents,
+    };
+  },
+});
+
 export const assign = mutation({
   args: {
     taskId: v.id("tasks"),
