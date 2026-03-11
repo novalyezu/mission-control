@@ -15,6 +15,20 @@ export const getById = query({
   },
 });
 
+export const create = mutation({
+  args: {
+    name: v.string(),
+    role: v.string(),
+    status: v.union(v.literal("idle"), v.literal("active"), v.literal("blocked")),
+    sessionKey: v.string(),
+    badge: v.optional(v.union(v.literal("lead"), v.literal("int"), v.literal("spc"))),
+    avatarColor: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("agents", args);
+  },
+});
+
 export const updateStatus = mutation({
   args: {
     id: v.id("agents"),

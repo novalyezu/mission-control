@@ -1,4 +1,4 @@
-import { internalMutation, internalAction } from "./_generated/server";
+import { internalMutation, internalAction, mutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 
@@ -53,6 +53,18 @@ export const _insertActivity = internalMutation({
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("activities", args);
+  },
+});
+
+export const clearAll = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const tables = ["agents", "tasks", "messages", "activities", "documents", "notifications"] as const;
+    for (const table of tables) {
+      const records = await ctx.db.query(table).collect();
+      await Promise.all(records.map((r) => ctx.db.delete(r._id)));
+    }
+    return { success: true };
   },
 });
 
