@@ -1,40 +1,59 @@
-# Welcome to your Convex + React (Vite) app
+# Mission Control
 
-This is a [Convex](https://convex.dev/) project created with [`npm create convex`](https://www.npmjs.com/package/create-convex).
+A real-time command center dashboard for managing AI agents and their tasks. Built with React + Convex. Single-page app, no auth (POC).
 
-After the initial setup (<2 minutes) you'll have a working full-stack app using:
+## Tech Stack
 
-- Convex as your backend (database, server logic)
-- [React](https://react.dev/) as your frontend (web page interactivity)
-- [Vite](https://vitest.dev/) for optimized web hosting
-- [Tailwind](https://tailwindcss.com/) for building great looking accessible UI
+- **Frontend:** React 19 + TypeScript, Vite, Tailwind CSS 4
+- **Backend:** [Convex](https://convex.dev/) (real-time database, server functions)
 
-## Get started
+## UI Layout
 
-If you just cloned this codebase and didn't use `npm create convex`, run:
+```
+┌──────────┬──────────────────────────────┬──────────────┐
+│  AGENTS  │        MISSION QUEUE         │  LIVE FEED   │
+│ sidebar  │     (kanban board)           │   sidebar    │
+│          │  Inbox│Assign│InProg│Rev│Done│              │
+└──────────┴──────────────────────────────┴──────────────┘
+              ↑ Header bar (stats, clock, status)
+```
+
+- **Left** — Agent roster with status indicators
+- **Center** — Kanban board with 5 columns: Inbox → Assigned → In Progress → Review → Done
+- **Right** — Live activity feed with filters by type and agent
+- **Modal** — Click any task card to open a detail view with Markdown description, messages, and documents
+
+## Get Started
 
 ```
 npm install
 npm run dev
 ```
 
-If you're reading this README on GitHub and want to use this template, run:
+This starts both the Convex backend and Vite frontend in parallel.
+
+Once running, seed the database with sample data:
 
 ```
-npm create convex@latest -- -t react-vite
+npx convex run seed:run
 ```
 
-## Learn more
+This populates 8 agents, 10 tasks across all statuses, and 8 activities.
 
-To learn more about developing your project with Convex, check out:
+## Project Structure
 
-- The [Tour of Convex](https://docs.convex.dev/get-started) for a thorough introduction to Convex principles.
-- The rest of [Convex docs](https://docs.convex.dev/) to learn about all Convex features.
-- [Stack](https://stack.convex.dev/) for in-depth articles on advanced topics.
-
-## Join the community
-
-Join thousands of developers building full-stack apps with Convex:
-
-- Join the [Convex Discord community](https://convex.dev/community) to get help in real-time.
-- Follow [Convex on GitHub](https://github.com/get-convex/), star and contribute to the open-source implementation of Convex.
+```
+convex/          # Backend — schema, queries, mutations, seed
+src/
+├── App.tsx
+├── components/
+│   ├── agents/  # AgentSidebar, AgentCard, AgentAvatar
+│   ├── board/   # MissionQueue, BoardColumn, TaskCard
+│   ├── feed/    # LiveFeed, FeedFilters, AgentFilterBar, FeedItem
+│   ├── task/    # TaskDetailModal, TaskDescription, TaskMessages, TaskDocuments
+│   ├── layout/  # Header
+│   └── ui/      # Badge, StatusDot, Tag, Clock
+└── lib/
+    └── utils.ts # timeAgo, formatClock, formatDate
+doc/             # Implementation plans
+```
