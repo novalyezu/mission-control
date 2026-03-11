@@ -60,7 +60,7 @@ export const run = internalAction({
   args: {},
   handler: async (ctx) => {
     // Insert agents
-    const [bhanu, friday, fury, jarvis, loki, pepper, quill, shuri] = await Promise.all([
+    const [bhanu, friday, fury, jarvis, loki, _pepper, quill, shuri] = await Promise.all([
       ctx.runMutation(internal.seed._insertAgent, {
         name: "Bhanu", role: "Founder", status: "active",
         badge: "lead", avatarColor: "#7C3AED", sessionKey: "agent:founder:main",
@@ -96,7 +96,7 @@ export const run = internalAction({
     ]);
 
     // Insert tasks
-    const [t1, t2, t3, t4, t5, t6, t7, t8, t9, t10] = await Promise.all([
+    const [t1, _t2, _t3, t4, t5, _t6, t7, _t8, t9, _t10] = await Promise.all([
       // INBOX
       ctx.runMutation(internal.seed._insertTask, {
         title: "Explore Dashboard & Document All Features",
